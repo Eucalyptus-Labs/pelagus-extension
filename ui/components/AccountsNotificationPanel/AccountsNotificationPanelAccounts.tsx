@@ -51,28 +51,6 @@ type WalletTypeInfo = {
   category: string
 }
 
-export const walletTypeDetails: { [key in AccountType]: WalletTypeInfo } = {
-  [AccountType.ReadOnly]: {
-    title: i18n.t("accounts.notificationPanel.readOnly"),
-    icon: "./images/eye@2x.png",
-    category: i18n.t("accounts.notificationPanel.category.readOnly"),
-  },
-  [AccountType.Imported]: {
-    title: i18n.t("accounts.notificationPanel.import"),
-    icon: "./images/imported@2x.png",
-    category: i18n.t("accounts.notificationPanel.category.others"),
-  },
-  [AccountType.Internal]: {
-    title: i18n.t("accounts.notificationPanel.internal"),
-    icon: "./images/stars_grey.svg",
-    category: i18n.t("accounts.notificationPanel.category.others"),
-  },
-  [AccountType.Ledger]: {
-    title: i18n.t("accounts.notificationPanel.ledger"),
-    icon: "./images/ledger_icon.svg",
-    category: i18n.t("accounts.notificationPanel.category.ledger"),
-  },
-}
 
 function WalletTypeHeader({
   accountType,
@@ -94,8 +72,31 @@ function WalletTypeHeader({
   setAddAddressSelected: (selected: boolean) => void
 }) {
   const { t } = useTranslation()
+  const walletTypeDetails: { [key in AccountType]: WalletTypeInfo } = {
+    [AccountType.ReadOnly]: {
+      title: t("accounts.notificationPanel.readOnly"),
+      icon: "./images/eye@2x.png",
+      category: t("accounts.notificationPanel.category.readOnly"),
+    },
+    [AccountType.Imported]: {
+      title: t("accounts.notificationPanel.import"),
+      icon: "./images/imported@2x.png",
+      category: t("accounts.notificationPanel.category.others"),
+    },
+    [AccountType.Internal]: {
+      title: t("accounts.notificationPanel.internal"),
+      icon: "./images/stars_grey.svg",
+      category: t("accounts.notificationPanel.category.others"),
+    },
+    [AccountType.Ledger]: {
+      title: t("accounts.notificationPanel.ledger"),
+      icon: "./images/ledger_icon.svg",
+      category: t("accounts.notificationPanel.category.ledger"),
+    },
+  }
   const { title, icon } = walletTypeDetails[accountType]
   const dispatch = useBackgroundDispatch()
+  
 
   useEffect(() => {
     if(addAddressSelected) {
@@ -190,7 +191,7 @@ function WalletTypeHeader({
           <div className="icon_wrap">
             <div className="icon" />
           </div>
-          {sectionTitle}
+          {sectionTitle.length > 25 ? (sectionTitle.slice(0, 25) + "...") : sectionTitle}
         </h2>
         {accountType !== AccountType.ReadOnly && (
           <SharedDropdown
@@ -252,14 +253,14 @@ function WalletTypeHeader({
           margin: 8px 0px;
         }
         .icon_wrap {
-          background-color: var(--green-60);
+          background-color: var(--hunter-green);
           margin: 0 7px 0 0;
           border-radius: 4px;
         }
         .icon {
           mask-image: url("${icon}");
           mask-size: cover;
-          background-color: var(--green-20);
+          background-color: var(--trophy-gold);
           width: 24px;
           height: 24px;
         }
@@ -307,6 +308,28 @@ export default function AccountsNotificationPanelAccounts({
   const accountTotals = useBackgroundSelector(
     selectCurrentNetworkAccountTotalsByCategory
   )
+  const walletTypeDetails: { [key in AccountType]: WalletTypeInfo } = {
+    [AccountType.ReadOnly]: {
+      title: t("accounts.notificationPanel.readOnly"),
+      icon: "./images/eye@2x.png",
+      category: t("accounts.notificationPanel.category.readOnly"),
+    },
+    [AccountType.Imported]: {
+      title: t("accounts.notificationPanel.import"),
+      icon: "./images/imported@2x.png",
+      category: t("accounts.notificationPanel.category.others"),
+    },
+    [AccountType.Internal]: {
+      title: t("accounts.notificationPanel.internal"),
+      icon: "./images/stars_grey.svg",
+      category: t("accounts.notificationPanel.category.others"),
+    },
+    [AccountType.Ledger]: {
+      title: t("accounts.notificationPanel.ledger"),
+      icon: "./images/ledger_icon.svg",
+      category: t("accounts.notificationPanel.category.ledger"),
+    },
+  }
 
   const [pendingSelectedAddress, setPendingSelectedAddress] = useState("")
   const shard = useRef("")
