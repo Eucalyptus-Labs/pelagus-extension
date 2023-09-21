@@ -519,10 +519,13 @@ export const checkTokenContractDetails = createBackgroundAsyncThunk(
 )
 
 transactionConstructionSliceEmitter.on("signedTransactionResult", (tx) => { 
-  console.log("transaction signed", tx)
+  console.log("TIM transaction signed", tx)
   const provider = globalThis.main.chainService.providerForNetworkOrThrow(tx.network)
   console.log(provider instanceof JsonRpcProvider)
-  provider.sendTransaction(serializeSigned(tx)).then(res => {
+
+  var serializedTX = serializeSigned(tx);
+  console.log("TIM serializedTX: " + serializedTX)
+  provider.sendTransaction(serializedTX).then(res => {
     console.log(res)
     globalThis.main.chainService.saveTransaction(tx, "local")
   })
