@@ -306,6 +306,8 @@ export const transferAsset = createBackgroundAsyncThunk(
         
       }
       let tx = genQuaiRawTransaction(fromNetwork, fromAddress, toAddress, assetAmount, nonce, fromNetwork.chainID, data, gasLimit??BigInt(200000), maxFeePerGas??BigInt(2000000000), maxPriorityFeePerGas??BigInt(1000000000))
+      console.log("transaction TO BE signed 3", tx);
+
       signData({transaction: tx, accountSigner: accountSigner})
       return
     }
@@ -520,10 +522,13 @@ export const checkTokenContractDetails = createBackgroundAsyncThunk(
 )
 
 transactionConstructionSliceEmitter.on("signedTransactionResult", async (tx) => { 
-  console.log("transaction signed", tx)
+  console.log("TIM transaction TO BE signed", tx);
   const provider = globalThis.main.chainService.providerForNetworkOrThrow(tx.network)
   try {
-    let res = await provider.sendTransaction(serializeSigned(tx))
+
+    var signedTX = serializeSigned(tx);
+    console.log("TIM signedTX", signedTX);
+    let res = await provider.sendTransaction(signedTX)
     console.log(res)
     globalThis.main.chainService.saveTransaction(tx, "local")
   } catch (error: any) {
@@ -554,6 +559,10 @@ function serializeSigned(transaction: SignedTransaction): string {
   // If there is an explicit gasPrice, make sure it matches the
   // EIP-1559 fees; otherwise they may not understand what they
   // think they are setting in terms of fee.
+
+  console.log("TIM transaction TO BE signed 1 ", transaction);
+
+
   if (transaction.gasPrice != null) {
       const gasPrice = BigNumber.from(transaction.gasPrice);
       const maxFeePerGas = BigNumber.from(transaction.maxFeePerGas || 0);
@@ -595,10 +604,17 @@ function serializeSigned(transaction: SignedTransaction): string {
 }
 
 function formatNumber(value: any, name: string): Uint8Array {
+
+  console.log("TIM formatNumber");
+
+
   const result = stripZeros(BigNumber.from(value).toHexString());
   if (result.length > 32) {
       logger.error("invalid length for " + name, ("transaction:" + name), value);
   }
+  console.log("TIM formatNumber a ", value);
+  console.log("TIM formatNumber b ", result);
+
   return result;
 }
 

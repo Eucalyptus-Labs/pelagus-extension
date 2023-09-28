@@ -82,3 +82,5 @@ export function calcEtxFeeMultiplier(fromShard: string, toShard: string) {
   }
 	return multiplier
 }
+
+gasLimit??BigInt(200000), maxFeePerGas??BigInt(2000000000), maxPriorityFeePerGas??BigInt(1000000000))

@@ -625,7 +625,7 @@ export default class Main extends BaseService<never> {
       }
       isSmartContractFungibleAsset(asset) ? console.log("Balance checker: " + asset.symbol + " " + newBalance + " " + asset.contractAddress)
       :
-      console.log("Balance checker: " + asset.symbol + " " + newBalance)
+      console.log(" TIM Balance checker 2: " + asset.symbol + " " + newBalance)
       await this.store.dispatch(
         updateAccountBalance({
           balances: [{
