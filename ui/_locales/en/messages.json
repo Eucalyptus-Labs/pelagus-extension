@@ -17,12 +17,15 @@
       "removeConfirm": "Yes, I want to remove it",
       "clearHistory": "Clear transaction history",
       "clearConfirm": "Yes, I want to clear it",
-      "clearHistoryWarning": "Clearing your wallet history in this extension does not delete transaction records from the blockchain. Your transaction history remains publicly visible on the blockchain and can be viewed using block explorers."
+      "clearHistoryWarning": "Clearing your wallet history in this extension does not delete transaction records from the blockchain. Your transaction history remains publicly visible on the blockchain and can be viewed using block explorers.",
+      "moveUp": "Move up",
+      "moveDown": "Move down"
     },
     "notificationPanel": {
       "accountPanelName": "Accounts",
       "addWallet": "Add Wallet",
       "addAddress": "Add Address",
+      "resetOrder": "Reset Order",
       "readOnly": "Read-only",
       "import": "Import",
       "internal": "Pelagus",
@@ -394,7 +397,7 @@
       "complete": {
         "title": "Welcome to Pelagus",
         "titleExisting": "Account added to Pelagus!",
-        "subtitle": "For faster access we recommend pinning Pelagus to your browser",
+        "subtitle": "To avoid conflicts with other wallets, we recommend that you turn off all other wallet extensions.",
         "animationAlt": "Pin the wallet"
       }
     },
@@ -762,7 +765,7 @@
   },
   "wallet": {
     "activities": {
-      "defaultHistoricalActivityExplainer": "All your new transaction will show up here.",
+      "defaultHistoricalActivityExplainer": "All of your new transactions will show up here.",
       "historicalActivityExplainer": "Pelagus will populate your historical activity over time; this may take an hour or more for accounts that have been active for a long time. For new accounts, new activity will show up here.",
       "endOfList": "You have reached the end of activity list.",
       "moreHistory": "For more history visit",

@@ -27,7 +27,7 @@ import {
 } from "../../lib/alchemy"
 
 // Back off by this amount as a base, exponentiated by attempts and jittered.
-const BASE_BACKOFF_MS = 400
+const BASE_BACKOFF_MS = 600
 // Max back off time in milliseconds
 const MAX_BACKOFF_MS = 10000
 // Retry 3 times before falling back to the next provider.
@@ -62,10 +62,10 @@ function waitAnd<T, E extends Promise<T>>(
 }
 
 /**
- * Return a jittered amount of ms to backoff bounded between 400 and 800 ms
+ * Return a jittered amount of ms to backoff bounded between 600 and 6000 ms
  */
 function backedOffMs(): number {
-  return BASE_BACKOFF_MS + 400 * Math.random()
+  return BASE_BACKOFF_MS + 5400 * Math.random()
 }
 
 /**
@@ -790,11 +790,26 @@ export default class SerialFallbackProvider extends QuaisJsonRpcProvider {
               "ms. URL:",
               this.currentProvider.connection.url
             )
+            // Provider will cache the error, so delete it
+            globalThis.main.UrlToProvider.delete(this.currentProvider.connection.url)
           }
         }
     } finally {
       if(!err && this.backoffUrlsToTime.has(this.currentProvider.connection.url) && this.backoffUrlsToTime.get(this.currentProvider.connection.url) !== BASE_BACKOFF_MS) {
         this.backoffUrlsToTime.set(this.currentProvider.connection.url, BASE_BACKOFF_MS)
+      } else if (!err) {
+        // Set a backoff anyways
+        let prevBackoffTime = this.backoffUrlsToTime.get(this.currentProvider.connection.url)??BASE_BACKOFF_MS
+        let newBackoffTime = Math.min(prevBackoffTime * 2, MAX_BACKOFF_MS)
+        this.backoffUrlsToTime.set(this.currentProvider.connection.url, newBackoffTime)
+        this.urlsReadyForReconnect.set(this.currentProvider.connection.url, false)
+        setTimeout(() => this.urlsReadyForReconnect.set(this.currentProvider.connection.url, true), newBackoffTime)
+        logger.info(
+          "No error but setting backoff:",
+          newBackoffTime,
+          "ms. URL:",
+          this.currentProvider.connection.url
+        )
       }
         
       }
@@ -886,7 +901,7 @@ export default class SerialFallbackProvider extends QuaisJsonRpcProvider {
       if (error instanceof Error) {
         err = true // only reset backoff timer if there is no error
         if (error.message.includes("could not detect network")) {
-          
+
           let prevBackoffTime = this.backoffUrlsToTime.get(this.currentProvider.connection.url)??BASE_BACKOFF_MS
           let newBackoffTime = Math.min(prevBackoffTime * 2, MAX_BACKOFF_MS)
           this.backoffUrlsToTime.set(this.currentProvider.connection.url, newBackoffTime)
@@ -898,6 +913,8 @@ export default class SerialFallbackProvider extends QuaisJsonRpcProvider {
             "ms. URL:",
             this.currentProvider.connection.url
           )
+          // Provider will cache the error, so delete it
+          globalThis.main.UrlToProvider.delete(this.currentProvider.connection.url)
         }
       }
     } finally {
@@ -1032,7 +1049,8 @@ export function makeSerialFallbackProvider(
     creator: () => {
       const url = new URL(rpcUrl)
       if(globalThis.main.UrlToProvider.has(rpcUrl)){
-        return globalThis.main.UrlToProvider.get(rpcUrl) as WebSocketProvider | JsonRpcProvider | QuaisJsonRpcProvider | QuaisWebSocketProvider
+        let provider = globalThis.main.UrlToProvider.get(rpcUrl) as WebSocketProvider | JsonRpcProvider | QuaisJsonRpcProvider | QuaisWebSocketProvider
+        return provider
       } else {
         console.log("Provider not found in map, creating new provider...")
       }
